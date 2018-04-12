@@ -45,23 +45,38 @@ articleView.handleAuthorFilter = function() {
       // Use an "attribute selector" to find those articles, and fade them in for the reader.
 
 
-      $('article').children().css({'display': 'none'});
-      // $(class).find(element).attr(value).css()
-      $('article').find('article'.children()).attr('data-author', event.target.value).css({'display' : 'initial'})
+      $('article').hide();
+      console.log($(this).val())
+      $(`article[data-author="${$(this).val()}"]`).show();
 
-      // $(`article[data-author=${event.target.value}]`).css({'display' : 'initial'})
+      
+
 
 
 
     } else {
       // TODO: If the <select> menu was changed to an option that is blank, we should first show all the articles, except the one article we are using as a template.
-
+      $('article').show();
+      $('.template').hide();
     }
     $('#category-filter').val('');
   });
 };
 
 articleView.handleCategoryFilter = function() {
+  $('#category-filter').on('change', function() {
+    if ($(this).val()) {
+      $('article').hide();
+      console.log($(this).val())
+      $(`article[data-category="${$(this).val()}"]`).show();
+    }
+    else{
+      $('article').show();
+      $('.template').hide();
+    }
+    $('#author-filter').val('');
+  })
+
   // TODO: Just like we do for #author-filter above, we should handle change events on the #category-filter element.
   // When an option with a value is selected, hide all the articles, then reveal the matches.
   // When the blank (default) option is selected, show all the articles, except for the template.
@@ -91,4 +106,5 @@ $(document).ready(function() {
 
   articleView.populateFilters();
   articleView.handleAuthorFilter();
+  articleView.handleCategoryFilter();
 })
