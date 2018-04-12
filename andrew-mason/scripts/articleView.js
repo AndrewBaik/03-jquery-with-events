@@ -14,7 +14,7 @@ articleView.populateFilters = function() {
       authorName = $(this).attr('data-author');
 
       // TODO: Refactor this concatenation using a template literal.
-      optionTag = '<option value="' + authorName + '">' + authorName + '</option>';
+      optionTag = `<option value="${authorName}"> ${authorName} </option>`;
 
       if ($('#author-filter option[value="' + authorName + '"]').length === 0) {
         $('#author-filter').append(optionTag);
@@ -25,7 +25,7 @@ articleView.populateFilters = function() {
       category = $(this).attr('data-category');
 
       // TODO: Refactor this concatenation using a template literal.
-      optionTag = '<option value="' + category + '">' + category + '</option>';
+      optionTag = `<option value="${category}"> ${authorName} </option>`;
 
       if ($('#category-filter option[value="' + category + '"]').length === 0) {
         $('#category-filter').append(optionTag);
@@ -35,21 +35,48 @@ articleView.populateFilters = function() {
 };
 
 articleView.handleAuthorFilter = function() {
+  console.log('event')
   $('#author-filter').on('change', function() {
+    // console.log($('[data-author = event.target.value]')
     // REVIEW: Inside this function, "this" is the element that triggered the event handler function we are defining. "$(this)" is using jQuery to select that element (analogous to event.target that we have seen before), so we can chain jQuery methods onto it.
     if ($(this).val()) {
+      // console.log($('[data-author *= event.target.value]'));
       // TODO: If the <select> menu was changed to an option that has a value, we first need to hide all the articles, and then show just the ones that match for the author that was selected.
       // Use an "attribute selector" to find those articles, and fade them in for the reader.
 
+
+      $('article').hide();
+      console.log($(this).val())
+      $(`article[data-author="${$(this).val()}"]`).show();
+
+
+
+
+
+
     } else {
       // TODO: If the <select> menu was changed to an option that is blank, we should first show all the articles, except the one article we are using as a template.
-
+      $('article').show();
+      $('.template').hide();
     }
     $('#category-filter').val('');
   });
 };
 
 articleView.handleCategoryFilter = function() {
+  $('#category-filter').on('change', function() {
+    if ($(this).val()) {
+      $('article').hide();
+      console.log($(this).val())
+      $(`article[data-category="${$(this).val()}"]`).show();
+    }
+    else{
+      $('article').show();
+      $('.template').hide();
+    }
+    $('#author-filter').val('');
+  })
+
   // TODO: Just like we do for #author-filter above, we should handle change events on the #category-filter element.
   // When an option with a value is selected, hide all the articles, then reveal the matches.
   // When the blank (default) option is selected, show all the articles, except for the template.
@@ -59,11 +86,18 @@ articleView.handleCategoryFilter = function() {
 
 articleView.handleMainNav = function() {
   // TODO: Add an event handler to .main-nav elements that will power the Tabs feature.
+  $('.tab').on('click', function() {
+    console.log(this);
+    $('.tab-content').hide();
+    $(``).show();
+
+  })
   // Clicking any .tab element should hide all the .tab-content sections, and then reveal the single .tab-content section that is associated with the clicked .tab element.
   // So: You need to dynamically build a selector string with the correct ID, based on the data available to you on the .tab element that was clicked.
 
   // REVIEW: Now trigger a click on the first .tab element, to set up the page.
   $('.main-nav .tab:first').click();
+  $('#articles').show();
 };
 
 articleView.setTeasers = function() {
@@ -77,4 +111,8 @@ articleView.setTeasers = function() {
 // TODO: Call all of the above functions, once we are sure the DOM is ready.
 $(document).ready(function() {
 
+  articleView.populateFilters();
+  articleView.handleAuthorFilter();
+  articleView.handleCategoryFilter();
+  articleView.handleMainNav();
 })
